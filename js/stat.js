@@ -51,6 +51,10 @@ var getRandomNum = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
+var randomColor = function () {
+  return 'hsl(240, ' + getRandomNum(0, 100) + '%, 50%)';
+};
+
 window.renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, Cloud.X + Cloud.GAP, Cloud.Y + Cloud.GAP, Cloud.SHADOW_COLOR);
   renderCloud(ctx, Cloud.X, Cloud.Y, Cloud.COLOR);
@@ -64,10 +68,15 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillText('Список результатов:', 150, 65);
 
   for (var i = 0; i < names.length; i++) {
-    ctx.fillText(names[i], Word.NAMES_X + (Bar.WIDTH + Bar.HORIZONTAL_GAP) * i, Word.NAMES_Y);
-    ctx.fillStyle = (names[i] === 'Вы') ? '#ff0000' : 'hsl(240, ' + getRandomNum(0, 100) + '%, 50%)';
-    ctx.fillRect(Bar.X + (Bar.WIDTH + Bar.HORIZONTAL_GAP) * i, Bar.Y, Bar.WIDTH, -((Bar.MAX_HEIGHT * times[i]) / maxTime));
-    ctx.fillStyle = '#000';
-    ctx.fillText(Math.round(times[i]), Bar.X + (Bar.WIDTH + Bar.HORIZONTAL_GAP) * i, Bar.Y - ((Bar.MAX_HEIGHT * times[i]) / maxTime) - Word.GAP);
+    var playerColor = randomColor();
+    var barHeight = (Bar.MAX_HEIGHT * times[i]) / maxTime;
+    var barPositionX = (Bar.WIDTH + Bar.HORIZONTAL_GAP) * i;
+
+    ctx.fillStyle = (names[i] === 'Вы') ? '#ff0000' : playerColor;
+    ctx.fillText(names[i], Word.NAMES_X + barPositionX, Word.NAMES_Y);
+    ctx.fillStyle = (names[i] === 'Вы') ? '#ff0000' : playerColor;
+    ctx.fillRect(Bar.X + barPositionX, Bar.Y, Bar.WIDTH, -barHeight);
+    ctx.fillStyle = (names[i] === 'Вы') ? '#ff0000' : playerColor;
+    ctx.fillText(Math.round(times[i]), Bar.X + barPositionX, Bar.Y - barHeight - Word.GAP);
   }
 };
